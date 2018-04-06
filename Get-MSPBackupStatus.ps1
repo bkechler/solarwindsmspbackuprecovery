@@ -33,6 +33,59 @@ $resultDiagnostic = @()
 $resultDisplay = @() 
 $resultDisplay += "Result="
 
+function Get-BackupStatus {
+    # Parameter help description
+    [String]$BackupPlugin
+
+    If ($BackupPlugin -eq $true) {
+        $BackupPluginBackup = $backupSessions.SessionStatistics.Session | Where {$_.Plugin -eq $BackupPlugin}  | Select -First 1
+        $BackupPluginStartTime = $BackupPluginBackup.StartTimeUTC
+        $BackupPluginDate = [datetime]::ParseExact($BackupPluginStartTime, "yyyy-MM-dd HH:mm:ss", $null)
+        $BackupPluginBackupStatus = $BackupPluginBackup.Status
+        If ($BackupPluginDate -lt $maxBackupAge) {
+            If ($BackupPluginBackup -eq $NULL) {
+            
+            }
+            Else {
+                $Exitcode = 1
+                $resultDiagnostic += "Following Backup is older than $maxAge hours:"
+            }
+        }   
+        Switch ($BackupPluginBackup.Status) {
+            "Completed" {
+            }    
+            "InProcess" {
+            }
+            "CompletedWithErros" {
+                $Exitcode = 2
+            }
+            "NotStarted" {
+                $Exitcode = 3
+            }
+            "Aborted" {
+                $Exitcode = 4
+            }
+            "Interrupted" {
+                $Exitcode = 5
+            }
+            "Failed" {
+                $Exitcode = 6
+            }
+            "Restarted" {
+            }
+            default {
+                $BackupPluginStatus = "Not Set Up"
+            }
+        }
+        $resultDisplay += "VssMsSqlBackup: $($VssMsSqlBackupStatus) - "
+        $resultDiagnostic += "VssMsSqlBackup $($VssMsSqlBackup.Status)"
+        $resultDiagnostic += $VssMsSqlBackupDate
+        $resultDiagnostic += $VssMsSqlBackupStatus
+        $resultDiagnostic += "---"
+    }
+
+}
+
 If ($VssMsSqlBackupPlugin -eq $true)
 {
     $VssMsSqlBackup = $backupSessions.SessionStatistics.Session | Where {$_.Plugin -eq "VssMsSqlBackupPlugin"}  | Select -First 1
