@@ -4,11 +4,11 @@ $VMWareBackupPlugin = $env:VMWareBackupPlugin
 $SystemStateBackupPlugin = $env:SystemStateBackupPlugin
 $FsBackupPlugin = $env:FsBackupPlugin
 
-$VssMsSqlBackupPlugin = $true
-$VMWareBackupPlugin  = $true
-$SystemStateBackupPlugin = $true
-$FsBackupPlugin = $true
-$maxAge = 72
+#$VssMsSqlBackupPlugin = $true
+#$VMWareBackupPlugin  = $true
+#$SystemStateBackupPlugin = $true
+#$FsBackupPlugin = $true
+#$maxAge = 72
 
 $currentDate = Get-Date
 $maxBackupAge = $currentDate.AddHours(-$maxAge)
